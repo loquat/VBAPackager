@@ -1,54 +1,15 @@
-// Cross-platform Open-Source VBA Compiler 
-// 
-// Credit:
-// Sancarn - Code changes away from malicious tool to compile legit VBA projects.
-// Stan Hegt (@StanHacked) / Outflank 20190330 - Creator of original EvilClippy v1.1
+// EvilClippy 
+// Cross-platform CFBF and MS-OVBA manipulation assistant
+//
+// Author: Stan Hegt (@StanHacked) / Outflank
+// Date: 20200415
+// Version: 1.3 (added GUI unhide option)
+//
 // Special thanks to Carrie Robberts (@OrOneEqualsOne) from Walmart for her contributions to this project.
 //
 // Compilation instructions
 // Mono: mcs /reference:OpenMcdf.dll,System.IO.Compression.FileSystem.dll /out:EvilClippy.exe *.cs 
 // Visual studio developer command prompt: csc /reference:OpenMcdf.dll,System.IO.Compression.FileSystem.dll /out:EvilClippy.exe *.cs 
-
-// This project is designed to take a folder structure as follows:
-// 
-// root
-// |- lib
-// |  |- stdDictionary.cls
-// |  |- stdArray.cls
-// |  |- stdCallback.cls
-// |  |- stdICallable.cls
-// |  |- stdXIEnumerable.cls
-// |  |- Excel
-// |     |- stdExcelExitHandler.frm
-// |     |- stdExcelExitHandler.frx
-// |- src
-// |  |- PinballMain.bas
-// |  |- ThisWorkbook.wkb
-// |  |- PinballUI.sht
-// |  |- PinballBall.cls
-// |  |- PinballScore.frm
-// |  |- PinballScore.frx
-// |
-// |- README.md
-// |- Input.xlsm
-// |- Output.xlsm
-// 
-// And write all bas, cls, frm, sht and wkb files to either an existing Excel spreadsheet, or a newly generated spreadsheet. 
-//
-// All this from a handy command line API
-//
-// CompileVBA --in "Input.xlsm" --out "Output.xlsm" --root "my/file/root" --compile-all
-//
-// CompileVBA --in "Input.xlsm" --out "Output.xlsm" --root "my/file/root" --add-file "my/file/class.cls"
-//
-// Short arguments
-// -i  - in             - Macro file in
-// -o  - out            - Compiled macro file out
-// -r  - root           - Root directory for macro
-// -ca - compile-all    - Compile all files into macro document.
-// -f  - add-file       - 
-
-
 
 using System;
 using OpenMcdf;
@@ -72,8 +33,8 @@ public class MSOfficeManipulator
 	// Filename of the document that is about to be manipulated
 	static string filename = "";
 
-	// Name of the generated output file.
-	static string outFilename = "";
+        // Name of the generated output file.
+        static string outFilename = "";
     
 	// Compound file that is under editing
 	static CompoundFile cf;
@@ -95,39 +56,38 @@ public class MSOfficeManipulator
 		// Target MS Office version for pcode
 		string targetOfficeVersion = "";
 
-		//REMOVAL OF EVILCLIPPY MALWARE-STYLE OPTIONS
-		//// Option to hide modules from VBA editor GUI
-		//bool optionHideInGUI = false;
+		// Option to hide modules from VBA editor GUI
+		bool optionHideInGUI = false;
 
-		//// Option to unhide modules from VBA editor GUI
-		//bool optionUnhideInGUI = false;
+		// Option to unhide modules from VBA editor GUI
+		bool optionUnhideInGUI = false;
 
-		//// Option to start web server to serve malicious template
-		//int optionWebserverPort = 0
-
-		//// Option to set random module names in dir stream
-		//bool optionSetRandomNames = false;
-
-		//// Option to delete metadata from file
-		//bool optionDeleteMetadata = false;
-
-		//// Option to reset module names in dir stream (undo SetRandomNames option)
-		//bool optionResetModuleNames = false;
-
-		//// Option to set locked/unviewable options in Project Stream
-		//bool optionUnviewableVBA = false;
-
-		//// Option to set unlocked/viewable options in Project Stream
-		//bool optionViewableVBA = false;
-
-		// File format is OpenXML (docm or xlsm)
-		bool is_OpenXML = false;
+		// Option to start web server to serve malicious template
+		int optionWebserverPort = 0;
 
 		// Option to display help
 		bool optionShowHelp = false;
 
-		// Temp path to unzip OpenXML files to
-		String unzipTempPath = "";
+		// File format is OpenXML (docm or xlsm)
+		bool is_OpenXML = false;
+
+		// Option to delete metadata from file
+		bool optionDeleteMetadata = false;
+
+		// Option to set random module names in dir stream
+		bool optionSetRandomNames = false;
+
+		// Option to reset module names in dir stream (undo SetRandomNames option)
+		bool optionResetModuleNames = false;
+
+		// Option to set locked/unviewable options in Project Stream
+		bool optionUnviewableVBA = false;
+
+        // Option to set unlocked/viewable options in Project Stream
+        bool optionViewableVBA = false;
+
+        // Temp path to unzip OpenXML files to
+        String unzipTempPath = "";
 
 
 		// Start parsing command line arguments
@@ -196,7 +156,6 @@ public class MSOfficeManipulator
 		// Attempt to unzip as docm or xlsm OpenXML format
 		try
 		{
-			
 			unzipTempPath = CreateUniqueTempDirectory();
 			ZipFile.ExtractToDirectory(filename, unzipTempPath);
 			if (File.Exists(Path.Combine(unzipTempPath, "word", "vbaProject.bin"))) { oleFilename = Path.Combine(unzipTempPath, "word", "vbaProject.bin"); }
@@ -251,49 +210,75 @@ public class MSOfficeManipulator
 			ReplaceOfficeVersionInVBAProject(vbaProjectStream, targetOfficeVersion);
 			commonStorage.GetStorage("VBA").GetStream("_VBA_PROJECT").SetData(vbaProjectStream);
 		}
+        //Set ProjectProtectionState and ProjectVisibilityState to locked/unviewable see https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/dfd72140-85a6-4f25-8a17-70a89c00db8c
+        if (optionUnviewableVBA)
+        {
+            string tmpStr                 = Regex.Replace(projectStreamString, "CMG=\".*\"", "CMG=\"\"");
+            string newProjectStreamString = Regex.Replace(tmpStr             ,  "GC=\".*\"", "GC=\"\"" );
+            // Write changes to project stream
+            commonStorage.GetStream("project").SetData(Encoding.UTF8.GetBytes(newProjectStreamString));
+        }
 
-    
-		// Ability to hide modules from the project.
-		// How does this work? In the file named `PROJECT` we simply replace one of the module definitions which we want to hide with ""
-		//   ID="{906FD6CA-D402-4265-A9A4-514C71176AE7}"
-		//   Document=ThisWorkbook/&H00000000
-		//   Document=Sheet1/&H00000000
-		//   Module=TestModule
-		//   Name="VBAProject"
-		//   HelpContextID="0"
-		//   VersionCompatible32="393222000"
-		//   CMG="55579C75A4CEA8CEA8CEA8CEA8"
-		//   DPB="AAA86324B925B925B9"
-		//   GC="FFFD3693DEBD32BE32BECD"
-		// ==> (Hiding Sheet1 and TestModule) ==>
-		//   ID="{906FD6CA-D402-4265-A9A4-514C71176AE7}"
-		//   Document=ThisWorkbook/&H00000000
-		//   
-		//   
-		//   Name="VBAProject"
-		//   HelpContextID="0"
-		//   VersionCompatible32="393222000"
-		//   CMG="55579C75A4CEA8CEA8CEA8CEA8"
-		//   DPB="AAA86324B925B925B9"
-		//   GC="FFFD3693DEBD32BE32BECD"
-		// I could see this being useful, but currently uncertain how it should be defined... Probably worthwhile if it's defined in the module which should be hidden itself.
-		// Especially useful for libraries to include!
-		
-		// // Hide modules from GUI
-		// if (optionHideInGUI)
-		// {
-		// 	foreach (var vbaModule in vbaModules)
-		// 	{
-		// 		if ((vbaModule.moduleName != "ThisDocument") && (vbaModule.moduleName != "ThisWorkbook"))
-		// 		{
-		// 			Console.WriteLine("Hiding module: " + vbaModule.moduleName);
-		// 			projectStreamString = projectStreamString.Replace("Module=" + vbaModule.moduleName, "");
-		// 		}
-		// 	}
+        //Set ProjectProtectionState and ProjectVisibilityState to be viewable see https://docs.microsoft.com/en-us/openspecs/office_file_formats/ms-ovba/dfd72140-85a6-4f25-8a17-70a89c00db8c
+        if (optionViewableVBA)
+        {
+			Console.WriteLine("Making the project visible...");
+			// Console.WriteLine("Stream before: " + projectStreamString);					
+			string tmpStr = projectStreamString;
+		    	   tmpStr = Regex.Replace(tmpStr, "CMG=\"?.*\"?", "CMG=\"CAC866BE34C234C230C630C6\"");
+		       	   tmpStr = Regex.Replace(tmpStr,  "ID=\"?.*\"?", "ID=\"{00000000-0000-0000-0000-000000000000}\"");
+		       	   tmpStr = Regex.Replace(tmpStr, "DPB=\"?.*\"?", "DPB=\"94963888C84FE54FE5B01B50E59251526FE67A1CC76C84ED0DAD653FD058F324BFD9D38DED37\"");
+		           tmpStr = Regex.Replace(tmpStr,  "GC=\"?.*\"?", "GC=\"5E5CF2C27646414741474\"");
+			string newProjectStreamString = tmpStr;
+			// Console.WriteLine("Stream afterw: " + newProjectStreamString);					
 
-		// 	// Write changes to project stream
-		// 	commonStorage.GetStream("project").SetData(Encoding.UTF8.GetBytes(projectStreamString));
-		// }
+            // Write changes to project stream
+            commonStorage.GetStream("project").SetData(Encoding.UTF8.GetBytes(newProjectStreamString));
+        }
+
+
+        // Hide modules from GUI
+        if (optionHideInGUI)
+		{
+			foreach (var vbaModule in vbaModules)
+			{
+				if ((vbaModule.moduleName != "ThisDocument") && (vbaModule.moduleName != "ThisWorkbook"))
+				{
+					Console.WriteLine("Hiding module: " + vbaModule.moduleName);
+					projectStreamString = projectStreamString.Replace("Module=" + vbaModule.moduleName, "");
+				}
+			}
+
+			// Write changes to project stream
+			commonStorage.GetStream("project").SetData(Encoding.UTF8.GetBytes(projectStreamString));
+		}
+
+		// Undo the Hide modules from GUI effects
+		if (optionUnhideInGUI)
+		{
+			ArrayList vbaModulesNamesFromProjectwm = getModulesNamesFromProjectwmStream(projectwmStreamString);
+			Regex theregex = new Regex(@"(Document\=.*\/.{10})([\S\s]*?)(ExeName32\=|Name\=|ID\=|Class\=|BaseClass\=|Package\=|HelpFile\=|HelpContextID\=|Description\=|VersionCompatible32\=|CMG\=|DPB\=|GC\=)");
+			Match m = theregex.Match(projectStreamString);
+			if (m.Groups.Count != 4)
+			{
+				Console.WriteLine("Error, could not find the location to insert module names. Not able to unhide modules");
+			}
+			else
+			{
+				string moduleString = "\r\n";
+
+				foreach (var vbaModuleName in vbaModulesNamesFromProjectwm)
+				{
+					Console.WriteLine("Unhiding module: " + vbaModuleName);
+					moduleString = moduleString.Insert(moduleString.Length, "Module=" + vbaModuleName + "\r\n");
+				}
+
+				projectStreamString = projectStreamString.Replace(m.Groups[0].Value, m.Groups[1].Value + moduleString + m.Groups[3].Value);
+
+				// write changes to project stream
+				commonStorage.GetStream("project").SetData(Encoding.UTF8.GetBytes(projectStreamString));
+			}
+		}
 
 		// Stomp VBA modules
 		if (VBASourceFileName != "")
