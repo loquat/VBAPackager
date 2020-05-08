@@ -75,6 +75,17 @@ root
 
 ```
 
+## Long term goals of this project / integrations with this project
+
+This project was designed as a stepping stone for making VBA projects easier to write and build in any IDE of your choosing. 3 key issues stand in the way of moving VBA projects out of the IDE and into custom development environments:
+
+1. A VBA code parser and language server - this is possibly going to be created by [rubberduck](https://github.com/rubberduck-vba/Rubberduck/issues/5176).
+2. A VBA compiler / file reader - which this project aims to become.
+3. A VBA interpreter and/or http debug server - for running and debugging code.
+
+On its own this only makes an external editor as good as the VBE, but we can do much better than that if we: 
+
+4. A VBA Babel-like compiler - this would allow us to parse custom code and translate it into official VBA code. Could have great benefits like line numbers on error, method property modification in code, optimised in-line functions/lambda expressions, inline classes, and much more...
 
 ## Authors
 
