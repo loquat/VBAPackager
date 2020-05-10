@@ -88,7 +88,7 @@ This project was designed as a stepping stone for making VBA projects easier to 
 
 ## Authors
 
-* openVBA Compiler - Sancarn 
+* VBAPackager - Sancarn 
 * EvilClippy - Stan Hegt ([@StanHacked](https://twitter.com/StanHacked)) / [Outflank](https://www.outflank.nl)
 * EvilClippy - Carrie Roberts ([@OrOneEqualsOne](https://twitter.com/OrOneEqualsOne) / Walmart).
 * EvilClippy - Nick Landers ([@monoxgas](https://twitter.com/monoxgas) / Silent Break Security) for pointing me towards OpenMCDF.
