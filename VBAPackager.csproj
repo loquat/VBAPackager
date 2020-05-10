@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="OpenMcdf"><HintPath>libs/OpenMcdf.dll</HintPath></Reference>
+    <Reference Include="OpenMcdf"><HintPath>System.IO.Compression.FileSystem.dll</HintPath></Reference>
+  </ItemGroup>
+
+</Project>
