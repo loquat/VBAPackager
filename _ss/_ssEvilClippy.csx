@@ -45,7 +45,7 @@ public class MSOfficeManipulator
 	static byte[] projectStream;
 	static byte[] projectwmStream;
 
-	static public void Main(string[] args)
+	static public void MainX(string[] args)
 	{
 		// List of target VBA modules to stomp, if empty => all modules will be stomped
 		List<string> targetModules = new List<string>();
