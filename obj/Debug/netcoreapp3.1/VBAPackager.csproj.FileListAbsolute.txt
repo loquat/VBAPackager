@@ -1,0 +1,14 @@
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/bin/Debug/netcoreapp3.1/VBAPackager.deps.json
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/bin/Debug/netcoreapp3.1/VBAPackager.runtimeconfig.json
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/bin/Debug/netcoreapp3.1/VBAPackager.runtimeconfig.dev.json
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/bin/Debug/netcoreapp3.1/VBAPackager.dll
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/bin/Debug/netcoreapp3.1/VBAPackager.pdb
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.csprojAssemblyReference.cache
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.csproj.CoreCompileInputs.cache
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.AssemblyInfoInputs.cache
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.AssemblyInfo.cs
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.dll
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.pdb
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.genruntimeconfig.cache
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/bin/Debug/netcoreapp3.1/OpenMcdf.dll
+/Users/Sancarn/Documents/Programming/Github/VBAPackager/obj/Debug/netcoreapp3.1/VBAPackager.csproj.CopyComplete
